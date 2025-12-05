@@ -75,6 +75,7 @@
             cursor: pointer;
             color: green;
             font-weight: bold;
+            margin-left: 5px;
         }
         tr:hover .add-btn {
             display: inline;
@@ -84,6 +85,24 @@
         }
         #deletedTable {
             margin-top: 50px;
+        }
+        .day-header {
+            background-color: #2c3e50;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .day-header:hover {
+            background-color: teal; /* Teal on hover */
+        }
+        .day-header td {
+            border-bottom: 2px solid #000; /* Separator line */
+        }
+        .day-group {
+            display: table-row-group;
+        }
+        .hidden {
+            display: none;
         }
         @media (max-width: 768px) {
             table {
@@ -98,7 +117,7 @@
     <script>
         function filterTable() {
             const table = document.getElementById("itineraryTable");
-            const rows = table.querySelectorAll("tbody tr");
+            const rows = table.querySelectorAll("tbody tr:not(.day-header)");
             const filters = Array.from(document.querySelectorAll(".filter-input")).map(input => input.value.toLowerCase());
 
             rows.forEach(row => {
@@ -139,7 +158,7 @@
             const mainTable = document.getElementById("itineraryTable").tBodies[0];
             const newRow = mainTable.insertRow(positionRow.rowIndex + 1);
             newRow.innerHTML = `
-                <td><input type="checkbox"></td>
+                <td><input type="checkbox"><span class="add-btn" onclick="addRow(this.closest('tr'))"> + </span></td>
                 <td contenteditable="true"></td>
                 <td contenteditable="true"></td>
                 <td contenteditable="true"></td>
@@ -151,12 +170,16 @@
                 <td contenteditable="true"></td>
                 <td contenteditable="true"></td>
             `;
-            const firstCell = newRow.querySelector('td:first-child');
-            const addBtn = document.createElement('span');
-            addBtn.classList.add('add-btn');
-            addBtn.textContent = ' + ';
-            addBtn.onclick = () => addRow(newRow);
-            firstCell.appendChild(addBtn);
+        }
+
+        function toggleDay(header) {
+            let nextRow = header.nextElementSibling;
+            while (nextRow && !nextRow.classList.contains('day-header')) {
+                if (!nextRow.classList.contains('filter-row')) {
+                    nextRow.classList.toggle('hidden');
+                }
+                nextRow = nextRow.nextElementSibling;
+            }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -186,7 +209,7 @@
             deletedCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
 
             // Add + button to existing rows
-            const rows = document.querySelectorAll('#itineraryTable tbody tr');
+            const rows = document.querySelectorAll('#itineraryTable tbody tr:not(.day-header)');
             rows.forEach(row => {
                 const firstCell = row.querySelector('td:first-child');
                 const addBtn = document.createElement('span');
@@ -195,12 +218,19 @@
                 addBtn.onclick = () => addRow(row);
                 firstCell.appendChild(addBtn);
             });
+
+            // Make day headers clickable for collapse
+            const headers = document.querySelectorAll('.day-header');
+            headers.forEach(header => {
+                header.onclick = () => toggleDay(header);
+                // Initially collapse or expand as needed; here starting expanded
+            });
         });
     </script>
 </head>
 <body>
     <h1>Fort Myers & Naples Family Itinerary - December 19-27, 2025</h1>
-    <p>This is your updated 9-day itinerary including travel days (arrival on Dec 19 and departure on Dec 27). The table is filterable: type in the boxes under each header to filter rows based on that column. Rows are now draggable: click and drag any row to reorder or move it to a different day/grouping. Select rows using checkboxes, then use buttons to delete (moves to bottom table) or restore. All cells are editable. Hover on the first column to see '+' for adding a new row below.</p>
+    <p>This is your updated 9-day itinerary including travel days (arrival on Dec 19 and departure on Dec 27). The table is filterable: type in the boxes under each header to filter rows based on that column. Rows are now draggable: click and drag any row to reorder or move it to a different day/grouping. Select rows using checkboxes, then use buttons to delete (moves to bottom table) or restore. All cells are editable. Hover on the first column to see '+' for adding a new row below. Each day is now collapsible—click the day header to toggle activities.</p>
     <div id="controls">
         <button onclick="deleteSelected()">Delete Selected</button>
         <button onclick="restoreSelected()">Restore Selected</button>
@@ -235,6 +265,9 @@
             </tr>
         </thead>
         <tbody>
+            <tr class="day-header">
+                <td colspan="11">Dec 19, 2025 - Travel Day (Arrival)</td>
+            </tr>
             <tr>
                 <td><input type="checkbox"></td>
                 <td>Dec 19, 2025</td>
@@ -247,6 +280,9 @@
                 <td><a href="https://www.luminaryhotel.com/" target="_blank">Luminary Hotel Booking and Details</a></td>
                 <td>Light dinner at hotel or nearby</td>
                 <td>N/A (Airport transfer ~30-45 min from RSW Airport)</td>
+            </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 20, 2025 - Day 1</td>
             </tr>
             <tr>
                 <td><input type="checkbox"></td>
@@ -287,6 +323,9 @@
                 <td>Dinner at Doc Ford's Rum Bar & Grille (seafood, kid options)</td>
                 <td>Nearby</td>
             </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 21, 2025 - Day 2</td>
+            </tr>
             <tr>
                 <td><input type="checkbox"></td>
                 <td>Dec 21, 2025</td>
@@ -325,6 +364,9 @@
                 <td><a href="https://www.smugglersgolf.com/fort-myers" target="_blank">Smugglers Cove Mini-Golf Courses and Pricing</a></td>
                 <td>Dinner at Pinchers (crab and pasta)</td>
                 <td>30 minutes back</td>
+            </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 22, 2025 - Day 3</td>
             </tr>
             <tr>
                 <td><input type="checkbox"></td>
@@ -365,6 +407,9 @@
                 <td>Dinner at The Turtle Club (beachside, family-friendly)</td>
                 <td>45 minutes back</td>
             </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 23, 2025 - Day 4</td>
+            </tr>
             <tr>
                 <td><input type="checkbox"></td>
                 <td>Dec 23, 2025</td>
@@ -403,6 +448,9 @@
                 <td><a href="https://www.luminaryhotel.com/" target="_blank">Luminary Hotel Amenities and Facilities</a></td>
                 <td>Casual dinner like burgers at Ford's Garage</td>
                 <td>Back to base (~1 hour)</td>
+            </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 24, 2025 - Day 5</td>
             </tr>
             <tr>
                 <td><input type="checkbox"></td>
@@ -443,6 +491,9 @@
                 <td>Festive dinner at The Veranda</td>
                 <td>Minimal</td>
             </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 25, 2025 - Day 6</td>
+            </tr>
             <tr>
                 <td><input type="checkbox"></td>
                 <td>Dec 25, 2025</td>
@@ -482,6 +533,9 @@
                 <td>Christmas dinner at resort restaurant (book ahead)</td>
                 <td>Minimal</td>
             </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 26, 2025 - Day 7</td>
+            </tr>
             <tr>
                 <td><input type="checkbox"></td>
                 <td>Dec 26, 2025</td>
@@ -520,6 +574,9 @@
                 <td>N/A</td>
                 <td>Dinner at The Dock at Crayton Cove</td>
                 <td>45 minutes back</td>
+            </tr>
+            <tr class="day-header">
+                <td colspan="11">Dec 27, 2025 - Travel Day (Departure)</td>
             </tr>
             <tr>
                 <td><input type="checkbox"></td>
