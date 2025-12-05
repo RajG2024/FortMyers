@@ -1,0 +1,428 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fort Myers & Naples Family Itinerary - December 2025</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        p {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #e8f4fd;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .filter-row th {
+            padding: 0;
+            background-color: #2980b9;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        tbody tr {
+            cursor: move; /* Indicates rows are draggable */
+        }
+        @media (max-width: 768px) {
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script>
+        function filterTable() {
+            const table = document.getElementById("itineraryTable");
+            const rows = table.querySelectorAll("tbody tr");
+            const filters = Array.from(document.querySelectorAll(".filter-input")).map(input => input.value.toLowerCase());
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                let show = true;
+                filters.forEach((filter, index) => {
+                    if (filter && cells[index].textContent.toLowerCase().indexOf(filter) === -1) {
+                        show = false;
+                    }
+                });
+                row.style.display = show ? "" : "none";
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const inputs = document.querySelectorAll(".filter-input");
+            inputs.forEach(input => input.addEventListener("input", filterTable));
+
+            // Make table rows sortable (drag and drop)
+            new Sortable(document.querySelector('#itineraryTable tbody'), {
+                animation: 150,
+                ghostClass: 'sortable-ghost', // Class for the drop placeholder
+                chosenClass: 'sortable-chosen', // Class for the chosen item
+                dragClass: 'sortable-drag', // Class for the dragging item
+                handle: 'td', // Drag handle on any cell
+                onEnd: function (evt) {
+                    // Optional: You can add logic here if needed after reordering
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Fort Myers & Naples Family Itinerary - December 19-27, 2025</h1>
+    <p>This is your updated 9-day itinerary including travel days (arrival on Dec 19 and departure on Dec 27). The table is filterable: type in the boxes under each header to filter rows based on that column. Rows are now draggable: click and drag any row to reorder or move it to a different day/grouping. A new "Website" column has been added with links to details for each activity.</p>
+    <table id="itineraryTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Location for the Day</th>
+                <th>Activity</th>
+                <th>Category</th>
+                <th>Time</th>
+                <th>Comments</th>
+                <th>Website</th>
+                <th>Meals Suggestion</th>
+                <th>Estimated Drive Time</th>
+            </tr>
+            <tr class="filter-row">
+                <th><input type="text" class="filter-input" placeholder="Filter Date"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Day"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Location"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Activity"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Category"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Time"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Comments"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Website"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Meals"></th>
+                <th><input type="text" class="filter-input" placeholder="Filter Drive Time"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Dec 19, 2025</td>
+                <td>Travel Day (Arrival)</td>
+                <td>Fort Myers</td>
+                <td>Arrival and Check-in to Hotel</td>
+                <td>Arrival</td>
+                <td>Afternoon/Evening (upon arrival)</td>
+                <td>Central base for the entire trip; no hotel moves needed. Suggest this hotel for its proximity to beaches and attractions, family-friendly amenities. Book a suite for comfort. Settle in after travel.</td>
+                <td><a href="https://www.luminaryhotel.com/" target="_blank">Luminary Hotel Booking and Details</a></td>
+                <td>Light dinner at hotel or nearby</td>
+                <td>N/A (Airport transfer ~30-45 min from RSW Airport)</td>
+            </tr>
+            <tr>
+                <td>Dec 20, 2025</td>
+                <td>Day 1</td>
+                <td>Fort Myers</td>
+                <td>Settle In and Hit the Beach (Fort Myers Beach)</td>
+                <td>Beach</td>
+                <td>Morning/Afternoon</td>
+                <td>Relaxed start with sandcastles, swimming, and shell hunting. Kid-friendly shallow waters; perfect for family bonding after travel.</td>
+                <td><a href="https://www.fortmyersbeachfl.gov/" target="_blank">Fort Myers Beach Visitor Guide</a></td>
+                <td>Picnic lunch on the beach</td>
+                <td>Minimal</td>
+            </tr>
+            <tr>
+                <td>Dec 20, 2025</td>
+                <td>Day 1</td>
+                <td>Fort Myers</td>
+                <td>Visit Manatee Park</td>
+                <td>Wildlife</td>
+                <td>Late Afternoon</td>
+                <td>Free spot to spot manatees; educational exhibits on wildlife. Great for a short, easy outing.</td>
+                <td><a href="https://www.leegov.com/parks/parks/manateepark" target="_blank">Manatee Park Information and Hours</a></td>
+                <td>N/A</td>
+                <td>15 minutes east</td>
+            </tr>
+            <tr>
+                <td>Dec 20, 2025</td>
+                <td>Day 1</td>
+                <td>Fort Myers</td>
+                <td>Holiday Lights Stroll at Edison & Ford Winter Estates</td>
+                <td>Holiday</td>
+                <td>Evening</td>
+                <td>Twinkling lights and festive decor in gardens; magical holiday vibe for kids. Entry ~$20-30/adult.</td>
+                <td><a href="https://www.edisonfordwinterestates.org/calendar/" target="_blank">Edison & Ford Holiday Events Calendar</a></td>
+                <td>Dinner at Doc Ford's Rum Bar & Grille (seafood, kid options)</td>
+                <td>Nearby</td>
+            </tr>
+            <tr>
+                <td>Dec 21, 2025</td>
+                <td>Day 2</td>
+                <td>Sanibel Island</td>
+                <td>Sanibel Island Shelling (Bowman’s Beach or Lighthouse Beach)</td>
+                <td>Beach</td>
+                <td>Morning</td>
+                <td>Collect unique shells; fun family challenge with the "Sanibel Stoop." Bridge toll ~$6.</td>
+                <td><a href="https://www.mysanibel.com/288/Beach-Parks" target="_blank">Sanibel Beach Parks and Shelling Tips</a></td>
+                <td>Breakfast at hotel</td>
+                <td>30 minutes to island</td>
+            </tr>
+            <tr>
+                <td>Dec 21, 2025</td>
+                <td>Day 2</td>
+                <td>Sanibel Island</td>
+                <td>J.N. "Ding" Darling National Wildlife Refuge</td>
+                <td>Wildlife</td>
+                <td>Afternoon</td>
+                <td>Bike rental or tram tour (~$1/person); spot birds, alligators, dolphins. Interactive center with kid scavenger hunts.</td>
+                <td><a href="https://www.fws.gov/refuge/jn-ding-darling" target="_blank">Ding Darling Refuge Activities and Trails</a></td>
+                <td>Pack snacks</td>
+                <td>On island</td>
+            </tr>
+            <tr>
+                <td>Dec 21, 2025</td>
+                <td>Day 2</td>
+                <td>Sanibel Island</td>
+                <td>Mini-Golf or Arcade at Smugglers Cove Adventure Golf</td>
+                <td>Recreation</td>
+                <td>Evening</td>
+                <td>Back in Fort Myers for fun games; relaxed end to the day.</td>
+                <td><a href="https://www.smugglersgolf.com/fort-myers" target="_blank">Smugglers Cove Mini-Golf Courses and Pricing</a></td>
+                <td>Dinner at Pinchers (crab and pasta)</td>
+                <td>30 minutes back</td>
+            </tr>
+            <tr>
+                <td>Dec 22, 2025</td>
+                <td>Day 3</td>
+                <td>Naples</td>
+                <td>Drive to Naples and Visit Naples Zoo at Caribbean Gardens</td>
+                <td>Wildlife</td>
+                <td>Morning</td>
+                <td>Feed giraffes, primate shows, lake cruise with monkeys. Entry ~$25/adult, $15/kid. Exciting for a 10-year-old.</td>
+                <td><a href="https://www.napleszoo.org/" target="_blank">Naples Zoo Tickets and Exhibits</a></td>
+                <td>Zoo cafe for lunch</td>
+                <td>45 minutes south</td>
+            </tr>
+            <tr>
+                <td>Dec 22, 2025</td>
+                <td>Day 3</td>
+                <td>Naples</td>
+                <td>Naples Pier and Beach</td>
+                <td>Beach</td>
+                <td>Afternoon</td>
+                <td>Walk the pier (free), fishing or wave play; nearby Tin City for shopping and ice cream.</td>
+                <td><a href="https://www.naplesgov.com/parksrec/park/naples-pier" target="_blank">Naples Pier Visitor Information</a></td>
+                <td>N/A</td>
+                <td>Nearby</td>
+            </tr>
+            <tr>
+                <td>Dec 22, 2025</td>
+                <td>Day 3</td>
+                <td>Naples</td>
+                <td>Holiday Boat Parade (if available) or Waterside Dining</td>
+                <td>Holiday</td>
+                <td>Evening</td>
+                <td>Check for holiday events; festive atmosphere.</td>
+                <td><a href="https://www.miacc.org/christmas-boat-parade" target="_blank">Marco Island Area Christmas Boat Parade Details</a></td>
+                <td>Dinner at The Turtle Club (beachside, family-friendly)</td>
+                <td>45 minutes back</td>
+            </tr>
+            <tr>
+                <td>Dec 23, 2025</td>
+                <td>Day 4</td>
+                <td>Everglades Area</td>
+                <td>Corkscrew Swamp Sanctuary</td>
+                <td>Nature</td>
+                <td>Morning</td>
+                <td>2.25-mile boardwalk (~$17/adult, kids free); spot otters and birds in ancient cypress. Easy, elevated path.</td>
+                <td><a href="https://www.audubon.org/corkscrew" target="_blank">Corkscrew Swamp Sanctuary Trails and Admission</a></td>
+                <td>Trail snacks; picnic lunch</td>
+                <td>30 minutes from base</td>
+            </tr>
+            <tr>
+                <td>Dec 23, 2025</td>
+                <td>Day 4</td>
+                <td>Everglades Area</td>
+                <td>Airboat Tour in the Everglades (e.g., Coopertown)</td>
+                <td>Adventure</td>
+                <td>Afternoon</td>
+                <td>Thrilling rides with alligator sightings (~$30-40/person). Guides share stories; fun speed for kids.</td>
+                <td><a href="https://coopertownairboats.com/" target="_blank">Coopertown Airboat Tours and Pricing</a></td>
+                <td>N/A</td>
+                <td>45 minutes from sanctuary</td>
+            </tr>
+            <tr>
+                <td>Dec 23, 2025</td>
+                <td>Day 4</td>
+                <td>Everglades Area</td>
+                <td>Relax at Base (Movie Night or Pool Time)</td>
+                <td>Relaxation</td>
+                <td>Evening</td>
+                <td>Downtime after adventure.</td>
+                <td><a href="https://www.luminaryhotel.com/" target="_blank">Luminary Hotel Amenities and Facilities</a></td>
+                <td>Casual dinner like burgers at Ford's Garage</td>
+                <td>Back to base (~1 hour)</td>
+            </tr>
+            <tr>
+                <td>Dec 24, 2025</td>
+                <td>Day 5</td>
+                <td>Fort Myers</td>
+                <td>Edison & Ford Winter Estates Tour (Daytime)</td>
+                <td>Educational</td>
+                <td>Morning</td>
+                <td>Explore inventors' homes and labs (~$30/adult, $20/kid). Interactive demos on science and nature.</td>
+                <td><a href="https://www.edisonfordwinterestates.org/" target="_blank">Edison & Ford Estates Tours and Tickets</a></td>
+                <td>Brunch at estates' cafe</td>
+                <td>Nearby</td>
+            </tr>
+            <tr>
+                <td>Dec 24, 2025</td>
+                <td>Day 5</td>
+                <td>Fort Myers</td>
+                <td>Lovers Key State Park</td>
+                <td>Nature</td>
+                <td>Afternoon</td>
+                <td>Kayak or paddleboard rental (~$20-30/hour); spot dolphins in mangroves. Picnic on beach.</td>
+                <td><a href="https://www.floridastateparks.org/Lovers-Key" target="_blank">Lovers Key State Park Activities and Fees</a></td>
+                <td>Beach picnic</td>
+                <td>20 minutes south</td>
+            </tr>
+            <tr>
+                <td>Dec 24, 2025</td>
+                <td>Day 5</td>
+                <td>Fort Myers</td>
+                <td>Christmas Eve Festivities (Local Events or Dinner)</td>
+                <td>Holiday</td>
+                <td>Evening</td>
+                <td>Light shows or caroling in downtown; special family dinner. Book ahead.</td>
+                <td><a href="https://www.fortmyers.gov/Calendar.aspx?EID=6377" target="_blank">Fort Myers Holiday Event Calendar</a></td>
+                <td>Festive dinner at The Veranda</td>
+                <td>Minimal</td>
+            </tr>
+            <tr>
+                <td>Dec 25, 2025</td>
+                <td>Day 6</td>
+                <td>Fort Myers/Beach</td>
+                <td>Low-Key Beach Time (Fort Myers Beach or Bonita Beach)</td>
+                <td>Beach</td>
+                <td>Morning</td>
+                <td>Christmas morning with sand sculptures or kite flying. Chill holiday start.</td>
+                <td><a href="https://www.cityofbonitasprings.org/" target="_blank">Bonita Springs Beaches and Parks Info</a></td>
+                <td>Hotel breakfast; light lunch on beach/boat</td>
+                <td>Under 30 minutes</td>
+            </tr>
+            <tr>
+                <td>Dec 25, 2025</td>
+                <td>Day 6</td>
+                <td>Fort Myers/Beach</td>
+                <td>Optional Dolphin-Watching Boat Tour</td>
+                <td>Adventure</td>
+                <td>Afternoon</td>
+                <td>Cruise with holiday music (~$40-50/person); festive and relaxing.</td>
+                <td><a href="https://www.adventureinparadiseinc.com/" target="_blank">Adventures in Paradise Dolphin Tours</a></td>
+                <td>N/A</td>
+                <td>From Fort Myers</td>
+            </tr>
+            <tr>
+                <td>Dec 25, 2025</td>
+                <td>Day 6</td>
+                <td>Fort Myers/Beach</td>
+                <td>Homey Celebration (Game Night or Movies)</td>
+                <td>Holiday</td>
+                <td>Evening</td>
+                <td>Relax at hotel for family time.</td>
+                <td><a href="https://www.luminaryhotel.com/" target="_blank">Luminary Hotel Family Amenities</a></td>
+                <td>Christmas dinner at resort restaurant (book ahead)</td>
+                <td>Minimal</td>
+            </tr>
+            <tr>
+                <td>Dec 26, 2025</td>
+                <td>Day 7</td>
+                <td>Fort Myers/Naples</td>
+                <td>Six Mile Cypress Slough Preserve</td>
+                <td>Nature</td>
+                <td>Morning</td>
+                <td>1-mile boardwalk (~$3/person); wildlife viewing with audio tours. Quick and easy.</td>
+                <td><a href="https://www.sloughpreserve.org/" target="_blank">Six Mile Cypress Slough Trails and Visits</a></td>
+                <td>Breakfast out</td>
+                <td>20 minutes</td>
+            </tr>
+            <tr>
+                <td>Dec 26, 2025</td>
+                <td>Day 7</td>
+                <td>Fort Myers/Naples</td>
+                <td>Shopping and Sweets on Fifth Avenue South (Naples)</td>
+                <td>Shopping</td>
+                <td>Afternoon</td>
+                <td>Browse boutiques, gelato, street performers. Lingering holiday vibe.</td>
+                <td><a href="https://www.fifthavenuesouth.com/" target="_blank">Fifth Avenue South Shopping and Dining Guide</a></td>
+                <td>Lunch at Jane's Garden Cafe</td>
+                <td>45 minutes south</td>
+            </tr>
+            <tr>
+                <td>Dec 26, 2025</td>
+                <td>Day 7</td>
+                <td>Fort Myers/Naples</td>
+                <td>Light Dinner and Check-Out Prep</td>
+                <td>Relaxation</td>
+                <td>Evening</td>
+                <td>Farewell meal; prepare for travel.</td>
+                <td>N/A</td>
+                <td>Dinner at The Dock at Crayton Cove</td>
+                <td>45 minutes back</td>
+            </tr>
+            <tr>
+                <td>Dec 27, 2025</td>
+                <td>Travel Day (Departure)</td>
+                <td>Fort Myers</td>
+                <td>Check-Out from Hotel and Departure</td>
+                <td>Departure</td>
+                <td>Morning (before travel)</td>
+                <td>Final check-out; head to airport or travel home. Safe travels!</td>
+                <td><a href="https://www.luminaryhotel.com/" target="_blank">Luminary Hotel Check-Out Info</a></td>
+                <td>Light breakfast at hotel</td>
+                <td>N/A (Airport transfer ~30-45 min to RSW Airport)</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+```
