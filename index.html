@@ -65,7 +65,25 @@
             text-decoration: underline;
         }
         tbody tr {
-            cursor: move; /* Indicates rows are draggable */
+            cursor: move;
+        }
+        td[contenteditable="true"] {
+            cursor: text;
+        }
+        .add-btn {
+            display: none;
+            cursor: pointer;
+            color: green;
+            font-weight: bold;
+        }
+        tr:hover .add-btn {
+            display: inline;
+        }
+        #controls {
+            margin-bottom: 10px;
+        }
+        #deletedTable {
+            margin-top: 50px;
         }
         @media (max-width: 768px) {
             table {
@@ -87,7 +105,7 @@
                 const cells = row.querySelectorAll("td");
                 let show = true;
                 filters.forEach((filter, index) => {
-                    if (filter && cells[index].textContent.toLowerCase().indexOf(filter) === -1) {
+                    if (filter && cells[index + 1].textContent.toLowerCase().indexOf(filter) === -1) {
                         show = false;
                     }
                 });
@@ -95,30 +113,102 @@
             });
         }
 
+        function deleteSelected() {
+            const mainTable = document.getElementById("itineraryTable").tBodies[0];
+            const deletedTable = document.getElementById("deletedTable").tBodies[0];
+            const selected = mainTable.querySelectorAll('input[type="checkbox"]:checked');
+            selected.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                deletedTable.appendChild(row.cloneNode(true));
+                row.remove();
+            });
+        }
+
+        function restoreSelected() {
+            const mainTable = document.getElementById("itineraryTable").tBodies[0];
+            const deletedTable = document.getElementById("deletedTable").tBodies[0];
+            const selected = deletedTable.querySelectorAll('input[type="checkbox"]:checked');
+            selected.forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                mainTable.appendChild(row.cloneNode(true));
+                row.remove();
+            });
+        }
+
+        function addRow(positionRow) {
+            const mainTable = document.getElementById("itineraryTable").tBodies[0];
+            const newRow = mainTable.insertRow(positionRow.rowIndex + 1);
+            newRow.innerHTML = `
+                <td><input type="checkbox"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            `;
+            const firstCell = newRow.querySelector('td:first-child');
+            const addBtn = document.createElement('span');
+            addBtn.classList.add('add-btn');
+            addBtn.textContent = ' + ';
+            addBtn.onclick = () => addRow(newRow);
+            firstCell.appendChild(addBtn);
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             const inputs = document.querySelectorAll(".filter-input");
             inputs.forEach(input => input.addEventListener("input", filterTable));
 
-            // Make table rows sortable (drag and drop)
             new Sortable(document.querySelector('#itineraryTable tbody'), {
                 animation: 150,
-                ghostClass: 'sortable-ghost', // Class for the drop placeholder
-                chosenClass: 'sortable-chosen', // Class for the chosen item
-                dragClass: 'sortable-drag', // Class for the dragging item
-                handle: 'td', // Drag handle on any cell
-                onEnd: function (evt) {
-                    // Optional: You can add logic here if needed after reordering
-                }
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                handle: 'td',
+            });
+
+            new Sortable(document.querySelector('#deletedTable tbody'), {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                handle: 'td',
+            });
+
+            // Make cells editable (except selection)
+            const mainCells = document.querySelectorAll('#itineraryTable td:not(:first-child)');
+            mainCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+            const deletedCells = document.querySelectorAll('#deletedTable td:not(:first-child)');
+            deletedCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+
+            // Add + button to existing rows
+            const rows = document.querySelectorAll('#itineraryTable tbody tr');
+            rows.forEach(row => {
+                const firstCell = row.querySelector('td:first-child');
+                const addBtn = document.createElement('span');
+                addBtn.classList.add('add-btn');
+                addBtn.textContent = ' + ';
+                addBtn.onclick = () => addRow(row);
+                firstCell.appendChild(addBtn);
             });
         });
     </script>
 </head>
 <body>
     <h1>Fort Myers & Naples Family Itinerary - December 19-27, 2025</h1>
-    <p>This is your updated 9-day itinerary including travel days (arrival on Dec 19 and departure on Dec 27). The table is filterable: type in the boxes under each header to filter rows based on that column. Rows are now draggable: click and drag any row to reorder or move it to a different day/grouping. A new "Website" column has been added with links to details for each activity.</p>
+    <p>This is your updated 9-day itinerary including travel days (arrival on Dec 19 and departure on Dec 27). The table is filterable: type in the boxes under each header to filter rows based on that column. Rows are now draggable: click and drag any row to reorder or move it to a different day/grouping. Select rows using checkboxes, then use buttons to delete (moves to bottom table) or restore. All cells are editable. Hover on the first column to see '+' for adding a new row below.</p>
+    <div id="controls">
+        <button onclick="deleteSelected()">Delete Selected</button>
+        <button onclick="restoreSelected()">Restore Selected</button>
+    </div>
     <table id="itineraryTable">
         <thead>
             <tr>
+                <th>Select</th>
                 <th>Date</th>
                 <th>Day</th>
                 <th>Location for the Day</th>
@@ -131,6 +221,7 @@
                 <th>Estimated Drive Time</th>
             </tr>
             <tr class="filter-row">
+                <th></th>
                 <th><input type="text" class="filter-input" placeholder="Filter Date"></th>
                 <th><input type="text" class="filter-input" placeholder="Filter Day"></th>
                 <th><input type="text" class="filter-input" placeholder="Filter Location"></th>
@@ -145,6 +236,7 @@
         </thead>
         <tbody>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 19, 2025</td>
                 <td>Travel Day (Arrival)</td>
                 <td>Fort Myers</td>
@@ -157,6 +249,7 @@
                 <td>N/A (Airport transfer ~30-45 min from RSW Airport)</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 20, 2025</td>
                 <td>Day 1</td>
                 <td>Fort Myers</td>
@@ -169,6 +262,7 @@
                 <td>Minimal</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 20, 2025</td>
                 <td>Day 1</td>
                 <td>Fort Myers</td>
@@ -181,6 +275,7 @@
                 <td>15 minutes east</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 20, 2025</td>
                 <td>Day 1</td>
                 <td>Fort Myers</td>
@@ -193,6 +288,7 @@
                 <td>Nearby</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 21, 2025</td>
                 <td>Day 2</td>
                 <td>Sanibel Island</td>
@@ -205,6 +301,7 @@
                 <td>30 minutes to island</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 21, 2025</td>
                 <td>Day 2</td>
                 <td>Sanibel Island</td>
@@ -217,6 +314,7 @@
                 <td>On island</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 21, 2025</td>
                 <td>Day 2</td>
                 <td>Sanibel Island</td>
@@ -229,6 +327,7 @@
                 <td>30 minutes back</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 22, 2025</td>
                 <td>Day 3</td>
                 <td>Naples</td>
@@ -241,6 +340,7 @@
                 <td>45 minutes south</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 22, 2025</td>
                 <td>Day 3</td>
                 <td>Naples</td>
@@ -253,6 +353,7 @@
                 <td>Nearby</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 22, 2025</td>
                 <td>Day 3</td>
                 <td>Naples</td>
@@ -265,6 +366,7 @@
                 <td>45 minutes back</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 23, 2025</td>
                 <td>Day 4</td>
                 <td>Everglades Area</td>
@@ -277,6 +379,7 @@
                 <td>30 minutes from base</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 23, 2025</td>
                 <td>Day 4</td>
                 <td>Everglades Area</td>
@@ -289,6 +392,7 @@
                 <td>45 minutes from sanctuary</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 23, 2025</td>
                 <td>Day 4</td>
                 <td>Everglades Area</td>
@@ -301,6 +405,7 @@
                 <td>Back to base (~1 hour)</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 24, 2025</td>
                 <td>Day 5</td>
                 <td>Fort Myers</td>
@@ -313,6 +418,7 @@
                 <td>Nearby</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 24, 2025</td>
                 <td>Day 5</td>
                 <td>Fort Myers</td>
@@ -325,6 +431,7 @@
                 <td>20 minutes south</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 24, 2025</td>
                 <td>Day 5</td>
                 <td>Fort Myers</td>
@@ -337,6 +444,7 @@
                 <td>Minimal</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 25, 2025</td>
                 <td>Day 6</td>
                 <td>Fort Myers/Beach</td>
@@ -349,6 +457,7 @@
                 <td>Under 30 minutes</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 25, 2025</td>
                 <td>Day 6</td>
                 <td>Fort Myers/Beach</td>
@@ -361,6 +470,7 @@
                 <td>From Fort Myers</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 25, 2025</td>
                 <td>Day 6</td>
                 <td>Fort Myers/Beach</td>
@@ -373,6 +483,7 @@
                 <td>Minimal</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 26, 2025</td>
                 <td>Day 7</td>
                 <td>Fort Myers/Naples</td>
@@ -385,6 +496,7 @@
                 <td>20 minutes</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 26, 2025</td>
                 <td>Day 7</td>
                 <td>Fort Myers/Naples</td>
@@ -397,6 +509,7 @@
                 <td>45 minutes south</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 26, 2025</td>
                 <td>Day 7</td>
                 <td>Fort Myers/Naples</td>
@@ -409,6 +522,7 @@
                 <td>45 minutes back</td>
             </tr>
             <tr>
+                <td><input type="checkbox"></td>
                 <td>Dec 27, 2025</td>
                 <td>Travel Day (Departure)</td>
                 <td>Fort Myers</td>
@@ -421,6 +535,25 @@
                 <td>N/A (Airport transfer ~30-45 min to RSW Airport)</td>
             </tr>
         </tbody>
+    </table>
+    <h2>Deleted Rows</h2>
+    <table id="deletedTable">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Location for the Day</th>
+                <th>Activity</th>
+                <th>Category</th>
+                <th>Time</th>
+                <th>Comments</th>
+                <th>Website</th>
+                <th>Meals Suggestion</th>
+                <th>Estimated Drive Time</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
     </table>
 </body>
 </html>
