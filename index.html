@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,10 +94,10 @@
             font-weight: bold;
         }
         .day-header:hover {
-            background-color: teal; /* Teal on hover */
+            background-color: teal;
         }
         .day-header td {
-            border-bottom: 2px solid #000; /* Separator line */
+            border-bottom: 2px solid #000;
         }
         .day-group {
             display: table-row-group;
@@ -141,6 +142,7 @@
                 deletedTable.appendChild(row.cloneNode(true));
                 row.remove();
             });
+            saveState();
         }
 
         function restoreSelected() {
@@ -152,6 +154,7 @@
                 mainTable.appendChild(row.cloneNode(true));
                 row.remove();
             });
+            saveState();
         }
 
         function addRow(positionRow) {
@@ -170,6 +173,7 @@
                 <td contenteditable="true"></td>
                 <td contenteditable="true"></td>
             `;
+            saveState();
         }
 
         function toggleDay(header) {
@@ -182,7 +186,66 @@
             }
         }
 
+        function saveState() {
+            const mainTable = document.getElementById("itineraryTable").tBodies[0];
+            const deletedTable = document.getElementById("deletedTable").tBodies[0];
+            const mainRows = Array.from(mainTable.rows).map(row => row.innerHTML);
+            const deletedRows = Array.from(deletedTable.rows).map(row => row.innerHTML);
+            localStorage.setItem('mainTable', JSON.stringify(mainRows));
+            localStorage.setItem('deletedTable', JSON.stringify(deletedRows));
+        }
+
+        function loadState() {
+            const mainSaved = localStorage.getItem('mainTable');
+            const deletedSaved = localStorage.getItem('deletedTable');
+            if (mainSaved) {
+                const mainTable = document.getElementById("itineraryTable").tBodies[0];
+                mainTable.innerHTML = JSON.parse(mainSaved).join('');
+            }
+            if (deletedSaved) {
+                const deletedTable = document.getElementById("deletedTable").tBodies[0];
+                deletedTable.innerHTML = JSON.parse(deletedSaved).join('');
+            }
+            // Re-attach event listeners after loading
+            attachListeners();
+        }
+
+        function attachListeners() {
+            // Re-attach add buttons
+            const rows = document.querySelectorAll('#itineraryTable tbody tr:not(.day-header)');
+            rows.forEach(row => {
+                const firstCell = row.querySelector('td:first-child');
+                let addBtn = firstCell.querySelector('.add-btn');
+                if (!addBtn) {
+                    addBtn = document.createElement('span');
+                    addBtn.classList.add('add-btn');
+                    addBtn.textContent = ' + ';
+                    firstCell.appendChild(addBtn);
+                }
+                addBtn.onclick = () => addRow(row);
+            });
+
+            // Re-attach day toggle
+            const headers = document.querySelectorAll('.day-header');
+            headers.forEach(header => {
+                header.onclick = () => toggleDay(header);
+            });
+
+            // Re-attach contenteditable
+            const mainCells = document.querySelectorAll('#itineraryTable td:not(:first-child)');
+            mainCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+            const deletedCells = document.querySelectorAll('#deletedTable td:not(:first-child)');
+            deletedCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+
+            // Save on edit
+            document.querySelectorAll('[contenteditable="true"]').forEach(cell => {
+                cell.addEventListener('input', saveState);
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            loadState();
+
             const inputs = document.querySelectorAll(".filter-input");
             inputs.forEach(input => input.addEventListener("input", filterTable));
 
@@ -192,6 +255,7 @@
                 chosenClass: 'sortable-chosen',
                 dragClass: 'sortable-drag',
                 handle: 'td',
+                onEnd: saveState
             });
 
             new Sortable(document.querySelector('#deletedTable tbody'), {
@@ -200,37 +264,14 @@
                 chosenClass: 'sortable-chosen',
                 dragClass: 'sortable-drag',
                 handle: 'td',
-            });
-
-            // Make cells editable (except selection)
-            const mainCells = document.querySelectorAll('#itineraryTable td:not(:first-child)');
-            mainCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-            const deletedCells = document.querySelectorAll('#deletedTable td:not(:first-child)');
-            deletedCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-
-            // Add + button to existing rows
-            const rows = document.querySelectorAll('#itineraryTable tbody tr:not(.day-header)');
-            rows.forEach(row => {
-                const firstCell = row.querySelector('td:first-child');
-                const addBtn = document.createElement('span');
-                addBtn.classList.add('add-btn');
-                addBtn.textContent = ' + ';
-                addBtn.onclick = () => addRow(row);
-                firstCell.appendChild(addBtn);
-            });
-
-            // Make day headers clickable for collapse
-            const headers = document.querySelectorAll('.day-header');
-            headers.forEach(header => {
-                header.onclick = () => toggleDay(header);
-                // Initially collapse or expand as needed; here starting expanded
+                onEnd: saveState
             });
         });
     </script>
 </head>
 <body>
     <h1>Fort Myers & Naples Family Itinerary - December 19-27, 2025</h1>
-    <p>This is your updated 9-day itinerary including travel days (arrival on Dec 19 and departure on Dec 27). The table is filterable: type in the boxes under each header to filter rows based on that column. Rows are now draggable: click and drag any row to reorder or move it to a different day/grouping. Select rows using checkboxes, then use buttons to delete (moves to bottom table) or restore. All cells are editable. Hover on the first column to see '+' for adding a new row below. Each day is now collapsible—click the day header to toggle activities.</p>
+    <p>This is your updated 9-day itinerary including travel days (arrival on Dec 19 and departure on Dec 27). The table is filterable: type in the boxes under each header to filter rows based on that column. Rows are now draggable: click and drag any row to reorder or move it to a different day/grouping. Select rows using checkboxes, then use buttons to delete (moves to bottom table) or restore. All cells are editable. Hover on the first column to see '+' for adding a new row below. Each day is now collapsible—click the day header to toggle activities. Changes are now saved automatically in your browser's local storage (persist on refresh, but not across devices).</p>
     <div id="controls">
         <button onclick="deleteSelected()">Delete Selected</button>
         <button onclick="restoreSelected()">Restore Selected</button>
@@ -614,3 +655,4 @@
     </table>
 </body>
 </html>
+```
